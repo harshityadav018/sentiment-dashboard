@@ -39,7 +39,11 @@ _CONTRACTIONS = {
     "'ll": " will", "'ve": " have", "'m": " am",
 }
 
-_CONTRACTION_RE = re.compile(r"\b(" + "|".join(re.escape(k) for k in _CONTRACTIONS) + r")\b")
+_CONTRACTION_RE = re.compile(
+    r"\b(" + "|".join(re.escape(k) for k in _CONTRACTIONS) + r")\b",
+    flags=re.IGNORECASE,
+)
+_CONTRACTIONS_LOWER = {k.lower(): v for k, v in _CONTRACTIONS.items()}
 
 
 # ---------------------------------------------------------------------------
@@ -47,7 +51,9 @@ _CONTRACTION_RE = re.compile(r"\b(" + "|".join(re.escape(k) for k in _CONTRACTIO
 # ---------------------------------------------------------------------------
 
 def expand_contractions(text: str) -> str:
-    return _CONTRACTION_RE.sub(lambda m: _CONTRACTIONS[m.group(0)], text)
+    return _CONTRACTION_RE.sub(
+        lambda m: _CONTRACTIONS_LOWER[m.group(0).lower()], text
+    )
 
 
 def remove_urls(text: str) -> str:
