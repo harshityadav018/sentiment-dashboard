@@ -296,19 +296,11 @@ def tab_features(feature_df: pd.DataFrame) -> None:
         "feature", "total_mentions", "positive_mentions", "negative_mentions",
         "negative_rate", "mean_rating", "mean_sentiment_score"
     ]
-    st.dataframe(
-        feature_df[display_cols].style.background_gradient(
-            subset=["negative_rate"], cmap="Reds"
-        ).background_gradient(
-            subset=["mean_sentiment_score"], cmap="RdYlGn"
-        ).format({
-            "negative_rate": "{:.1%}",
-            "mean_sentiment_score": "{:.3f}",
-            "mean_rating": "{:.2f}",
-        }),
-        hide_index=True,
-        use_container_width=True,
-    )
+    display_df = feature_df[display_cols].copy()
+    display_df["negative_rate"] = display_df["negative_rate"].map("{:.1%}".format)
+    display_df["mean_sentiment_score"] = display_df["mean_sentiment_score"].map("{:.3f}".format)
+    display_df["mean_rating"] = display_df["mean_rating"].map("{:.2f}".format)
+    st.dataframe(display_df, hide_index=True, use_container_width=True)
 
     # Scatter: total mentions vs negative rate (bubble = mean rating)
     st.subheader("Volume vs Complaint Rate")
